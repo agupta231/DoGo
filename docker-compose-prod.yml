@@ -1,0 +1,15 @@
+version: '3'
+services:
+  server: 
+    build:
+      context: ./server
+      dockerfile: Dockerfile.prod
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.prod
+    stdin_open: true
+    tty: true
+    depends_on:
+      - server

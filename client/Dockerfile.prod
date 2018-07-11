@@ -1,0 +1,12 @@
+FROM golang:rc-alpine as builder
+MAINTAINER Ankur Gupta
+
+ADD . /app
+WORKDIR /app
+
+RUN go build -o bin/client src/client.go
+
+FROM alpine:latest
+WORKDIR /root/
+COPY --from=builder /app/bin/client .
+CMD ["./client"]
