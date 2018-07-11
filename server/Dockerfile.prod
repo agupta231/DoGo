@@ -1,0 +1,17 @@
+FROM golang:rc-alpine as builder
+MAINTAINER Ankur Gupta
+
+RUN apk update && apk upgrade
+RUN apk add --no-cache git mercurial
+
+RUN go get github.com/julienschmidt/httprouter
+
+ADD . /app
+WORKDIR /app
+
+RUN go build -o bin/server src/server.go
+
+FROM alpine:latest
+WORKDIR /root/
+COPY --from=builder /app/bin/server .
+CMD ["./server"]

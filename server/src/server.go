@@ -8,6 +8,8 @@ import (
 )
 
 func main() {
+		log.Println("API Server Started")
+
     router := httprouter.New()
     router.GET("/hello-world", helloWorld)
 
