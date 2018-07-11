@@ -2,27 +2,30 @@ package main
 
 import (
 	"os"
-	"log"
 	"bufio"
 	"fmt"
-	"strings"
 	"net/http"
 	"io/ioutil"
 	"time"
+	"strings"
+	"log"
 )
 
-const baseURL string = "server:9876/hello-world"
+const baseURL string = "http://server:9876/hello-world"
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
+	reader := bufio.NewReader(os.Stdin)
 
-	for true {
+	for {
 		fmt.Println("Send [R] or [Q]uit?")
 
-		if userChoice == "Q" {
+		userChoice, _ := reader.ReadString('\n')
+		userChoice = strings.Replace(userChoice, "\n", "", -1)
+
+		if strings.Compare("Q", userChoice) == 0 {
 			fmt.Println("Okie Dokie... Quitting!")
 			return
-		} else if userChoice == "R" {
+		} else if strings.Compare("R", userChoice) == 0 {
 			client := http.Client{
 				Timeout: time.Second * 2,
 			}
@@ -30,19 +33,22 @@ func main() {
 			req, err := http.NewRequest(http.MethodGet, baseURL, nil)
 
 			if err != nil {
-				log.Fatal(err)
+				log.Println("HTTP Request Creation Error")
+				log.Println(err)
 			}
 
 			res, getErr := client.Do(req)
 
 			if getErr != nil {
-				log.Fatal(err)
+				log.Println("HTTP Request Execution Error")
+				log.Println(getErr)
 			}
 
 			body, _ := ioutil.ReadAll(res.Body)
-			fmt.Println(body)
+			log.Println(string(body))
+			fmt.Println(string(body))
 		} else {
-			fmt.Println("Couldn't understand input. Please try again.")
+			log.Println("Couldn't understand input. Please try again.")
 		}
 	}
 }

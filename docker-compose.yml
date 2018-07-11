@@ -13,3 +13,5 @@ services:
       - ./client:/app
     stdin_open: true
     tty: true
+    depends_on: 
+      - server
